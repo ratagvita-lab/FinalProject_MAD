@@ -2,18 +2,20 @@ import React from 'react';
 import { View, Text, StyleSheet, FlatList, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import KosCard from '../../components/KosCard';
+import { mockKosList } from '../../constants/mockData';
 import { useFavorites } from '../../hooks/useFavorites';
 
 export default function FavoritesScreen() {
-  const { getFavoriteKos, toggleFavorite, isFavorite } = useFavorites();
-  const favoriteKos = getFavoriteKos();
+  const { toggleFavorite, isFavorite, favorites } = useFavorites();
+
+  const favoriteKos = mockKosList.filter(kos => favorites.includes(kos.id));
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Kost Favoritmu</Text>
-          <Text style={styles.subtitle}>Tempat kost impian yang kamu simpan</Text>
+          <Text style={styles.title}>Kost Favoritku ❤️</Text>
+          <Text style={styles.subtitle}>Pilihan terbaik yang kamu simpan</Text>
         </View>
 
         <FlatList
@@ -23,8 +25,11 @@ export default function FavoritesScreen() {
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Ionicons name="heart-dislike-outline" size={60} color="#dfe4ea" />
-              <Text style={styles.emptyText}>Belum ada kost favorit.</Text>
+              <View style={styles.emptyIconContainer}>
+                <Ionicons name="heart-dislike-outline" size={60} color="#dfe4ea" />
+              </View>
+              <Text style={styles.emptyTitle}>Belum Ada Favorit</Text>
+              <Text style={styles.emptyText}>Cari kost idamanmu dan tekan tombol hati untuk menyimpannya di sini.</Text>
             </View>
           }
           renderItem={({ item }) => (
@@ -42,15 +47,15 @@ export default function FavoritesScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f1f2f6',
+    backgroundColor: '#f1f6f9',
   },
   container: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingTop: 40,
   },
   header: {
-    marginBottom: 20,
+    marginBottom: 24,
   },
   title: {
     fontSize: 28,
@@ -63,16 +68,38 @@ const styles = StyleSheet.create({
     color: '#747d8c',
   },
   listContainer: {
-    paddingBottom: 20,
+    paddingBottom: 24,
   },
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 80,
+    paddingHorizontal: 20,
+  },
+  emptyIconContainer: {
+    width: 120,
+    height: 120,
+    backgroundColor: '#ffffff',
+    borderRadius: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+    shadowColor: '#1e90ff',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.1,
+    shadowRadius: 16,
+    elevation: 4,
+  },
+  emptyTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#2f3542',
+    marginBottom: 12,
   },
   emptyText: {
-    marginTop: 16,
     fontSize: 16,
     color: '#747d8c',
+    textAlign: 'center',
+    lineHeight: 24,
   },
 });

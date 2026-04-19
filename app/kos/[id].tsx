@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, Pressable, Platform, Linking } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, Pressable, Platform, Linking, StatusBar } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { mockKosList } from '../../constants/mockData';
@@ -26,7 +26,6 @@ export default function KosDetailScreen() {
   const favorite = isFavorite(kos.id);
 
   const handleContactOwner = () => {
-    // Mocking contact action
     if (Platform.OS !== 'web') {
       Linking.openURL(`whatsapp://send?phone=+6281234567890&text=Halo,%20saya%20tertarik%20dengan%20${kos.title}`);
     } else {
@@ -36,18 +35,26 @@ export default function KosDetailScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent} bounces={false}>
+        
+        {/* Parallax Image Header */}
         <View style={styles.imageContainer}>
           <Image source={{ uri: kos.imageUrl }} style={styles.image} />
-          <Pressable style={styles.headerBackButton} onPress={() => router.back()}>
-            <Ionicons name="arrow-back" size={24} color="#ffffff" />
-          </Pressable>
-          <Pressable style={styles.headerFavoriteButton} onPress={() => toggleFavorite(kos.id)}>
-            <Ionicons name={favorite ? 'heart' : 'heart-outline'} size={28} color={favorite ? '#ff4757' : '#ffffff'} />
-          </Pressable>
+          {/* Top Gradient/Shadow usually handled by ImageBackground but simplified here */}
+          
+          <View style={styles.headerButtons}>
+            <Pressable style={styles.circleButton} onPress={() => router.back()}>
+              <Ionicons name="chevron-back" size={28} color="#2f3542" />
+            </Pressable>
+            <Pressable style={styles.circleButton} onPress={() => toggleFavorite(kos.id)}>
+              <Ionicons name={favorite ? 'heart' : 'heart-outline'} size={28} color={favorite ? '#ff4757' : '#2f3542'} />
+            </Pressable>
+          </View>
         </View>
 
         <View style={styles.contentContainer}>
+          
           <View style={styles.titleRow}>
             <Text style={styles.title}>{kos.title}</Text>
             <View style={styles.typeBadge}>
@@ -56,7 +63,7 @@ export default function KosDetailScreen() {
           </View>
 
           <View style={styles.locationContainer}>
-            <Ionicons name="location" size={20} color="#ff4757" />
+            <Ionicons name="location" size={20} color="#1e90ff" />
             <Text style={styles.locationText}>{kos.location}</Text>
           </View>
 
@@ -71,16 +78,18 @@ export default function KosDetailScreen() {
           <View style={styles.facilitiesContainer}>
             {kos.facilities.map((facility, index) => (
               <View key={index} style={styles.facilityItem}>
-                <Ionicons 
-                  name={
-                    facility === 'WiFi' ? 'wifi' :
-                    facility === 'AC' ? 'snow' :
-                    facility === 'Kamar mandi dalam' ? 'water' :
-                    facility === 'Parkir Luas' ? 'car' : 'home'
-                  } 
-                  size={24} 
-                  color="#1e90ff" 
-                />
+                <View style={styles.facilityIconContainer}>
+                  <Ionicons 
+                    name={
+                      facility === 'WiFi' ? 'wifi' :
+                      facility === 'AC' ? 'snow' :
+                      facility === 'Kamar mandi dalam' ? 'water' :
+                      facility === 'Parkir Luas' ? 'car' : 'home'
+                    } 
+                    size={22} 
+                    color="#1e90ff" 
+                  />
+                </View>
                 <Text style={styles.facilityText}>{facility}</Text>
               </View>
             ))}
@@ -88,26 +97,28 @@ export default function KosDetailScreen() {
           
           <View style={styles.divider} />
           
-          <Text style={styles.sectionTitle}>Deskripsi</Text>
+          <Text style={styles.sectionTitle}>Review & Deskripsi</Text>
           <Text style={styles.descriptionText}>
-            Kost nyaman dengan lingkungan yang tenang, sangat cocok untuk mahasiswa maupun pekerja. Lokasi strategis dekat dengan berbagai fasilitas umum seperti minimarket, warung makan, dan halte transportasi umum.
+            Kost eksklusif yang sangat nyaman dengan lingkungan tenang, sangat cocok untuk mahasiswa maupun pekerja profesional. Lokasi strategis hanya 5 menit dari kampus dan dekat dengan pusat perbelanjaan, minimarket, serta fasilitas umum lainnya. Desain modern minimalis memberikan kenyamanan ekstra.
           </Text>
           
           {/* Spacer for bottom action bar */}
-          <View style={{height: 100}} />
+          <View style={{height: 120}} />
         </View>
       </ScrollView>
 
-      {/* Fixed Bottom Action Bar */}
-      <View style={styles.bottomBar}>
-        <View style={styles.bottomPriceContainer}>
-          <Text style={styles.bottomPriceLabel}>Harga mulai</Text>
-          <Text style={styles.bottomPrice}>{kos.price}</Text>
+      {/* Floating Bottom Action Bar */}
+      <View style={styles.bottomBarWrapper}>
+        <View style={styles.bottomBar}>
+          <View style={styles.bottomPriceContainer}>
+            <Text style={styles.bottomPriceLabel}>Total Harga</Text>
+            <Text style={styles.bottomPrice}>{kos.price}</Text>
+          </View>
+          <Pressable style={styles.contactButton} onPress={handleContactOwner}>
+            <Ionicons name="chatbubble-ellipses" size={20} color="#ffffff" style={styles.contactIcon} />
+            <Text style={styles.contactButtonText}>Hubungi</Text>
+          </Pressable>
         </View>
-        <Pressable style={styles.contactButton} onPress={handleContactOwner}>
-          <Ionicons name="logo-whatsapp" size={20} color="#ffffff" style={styles.contactIcon} />
-          <Text style={styles.contactButtonText}>Hubungi Pemilik</Text>
-        </Pressable>
       </View>
     </View>
   );
@@ -116,7 +127,7 @@ export default function KosDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f1f6f9',
   },
   scrollContent: {
     paddingBottom: 20,
@@ -125,6 +136,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#ffffff',
   },
   errorText: {
     fontSize: 18,
@@ -133,106 +145,120 @@ const styles = StyleSheet.create({
   },
   backButton: {
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical: 12,
     backgroundColor: '#1e90ff',
-    borderRadius: 8,
+    borderRadius: 12,
   },
   backButtonText: {
     color: '#ffffff',
-    fontWeight: '600',
+    fontWeight: '700',
   },
   imageContainer: {
     width: '100%',
-    height: 300,
+    height: 350,
     position: 'relative',
+    backgroundColor: '#dfe4ea',
   },
   image: {
     width: '100%',
     height: '100%',
   },
-  headerBackButton: {
+  headerButtons: {
     position: 'absolute',
-    top: 50,
+    top: Platform.OS === 'ios' ? 60 : 40,
     left: 20,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    padding: 10,
-    borderRadius: 20,
-  },
-  headerFavoriteButton: {
-    position: 'absolute',
-    top: 50,
     right: 20,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    padding: 8,
-    borderRadius: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  circleButton: {
+    width: 48,
+    height: 48,
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 5,
   },
   contentContainer: {
-    padding: 20,
-    marginTop: -20,
-    backgroundColor: '#ffffff',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    padding: 24,
+    marginTop: -30,
+    backgroundColor: '#f1f6f9',
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
   },
   titleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   title: {
     flex: 1,
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: '800',
     color: '#2f3542',
     marginRight: 10,
+    lineHeight: 32,
   },
   typeBadge: {
-    backgroundColor: '#eccc68',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
   },
   typeText: {
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: 14,
+    fontWeight: '800',
     color: '#2f3542',
   },
   locationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   locationText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#747d8c',
-    marginLeft: 6,
+    marginLeft: 8,
     flex: 1,
+    fontWeight: '500',
   },
   priceContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'baseline',
     marginBottom: 20,
   },
   price: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: '800',
     color: '#1e90ff',
   },
   duration: {
     fontSize: 16,
     color: '#747d8c',
-    marginBottom: 4,
+    fontWeight: '600',
   },
   divider: {
-    height: 1,
-    backgroundColor: '#f1f2f6',
-    marginVertical: 20,
+    height: 2,
+    backgroundColor: '#e6eaef',
+    marginVertical: 24,
+    borderRadius: 1,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 20,
+    fontWeight: '800',
     color: '#2f3542',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   facilitiesContainer: {
     flexDirection: 'row',
@@ -240,64 +266,87 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   facilityItem: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
-    width: '45%',
-    backgroundColor: '#f1f2f6',
+    width: '21%',
+    backgroundColor: '#ffffff',
     padding: 12,
-    borderRadius: 12,
+    borderRadius: 16,
+    shadowColor: '#1e90ff',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  facilityIconContainer: {
+    width: 44,
+    height: 44,
+    backgroundColor: '#e6f2ff',
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   facilityText: {
-    marginLeft: 10,
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 12,
+    fontWeight: '600',
     color: '#2f3542',
-    flex: 1,
+    textAlign: 'center',
   },
   descriptionText: {
-    fontSize: 14,
-    lineHeight: 24,
+    fontSize: 15,
+    lineHeight: 26,
     color: '#57606f',
   },
-  bottomBar: {
+  bottomBarWrapper: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
+    paddingTop: 10,
+    paddingBottom: Platform.OS === 'ios' ? 34 : 20,
+    paddingHorizontal: 20,
+    backgroundColor: 'transparent',
+  },
+  bottomBar: {
     backgroundColor: '#ffffff',
     flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    paddingBottom: Platform.OS === 'ios' ? 34 : 16,
-    borderTopWidth: 1,
-    borderTopColor: '#f1f2f6',
+    paddingHorizontal: 24,
+    paddingVertical: 18,
+    borderRadius: 30,
+    shadowColor: '#1e90ff',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 10,
     alignItems: 'center',
   },
   bottomPriceContainer: {
     flex: 1,
   },
   bottomPriceLabel: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#747d8c',
-    marginBottom: 2,
+    marginBottom: 4,
+    fontWeight: '600',
   },
   bottomPrice: {
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: 22,
+    fontWeight: '800',
     color: '#2f3542',
   },
   contactButton: {
     flexDirection: 'row',
-    backgroundColor: '#2ed573',
-    paddingHorizontal: 20,
-    paddingVertical: 14,
-    borderRadius: 16,
+    backgroundColor: '#1e90ff',
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderRadius: 20,
     alignItems: 'center',
-    shadowColor: '#2ed573',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowColor: '#1e90ff',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 6,
   },
   contactIcon: {
     marginRight: 8,
@@ -305,6 +354,6 @@ const styles = StyleSheet.create({
   contactButtonText: {
     color: '#ffffff',
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '800',
   },
 });

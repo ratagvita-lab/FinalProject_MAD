@@ -29,42 +29,51 @@ export default function KosCard({ kos, onToggleFavorite }: KosCardProps) {
     >
       <View style={styles.imageContainer}>
         <Image source={{ uri: kos.imageUrl }} style={styles.image} />
-        <View style={styles.typeBadge}>
-          <Text style={styles.typeText}>{kos.type}</Text>
+        
+        {/* Soft dark gradient overlay approximation via shadows/opacity could go here, but using badge is fine */}
+        <View style={styles.topBadgesRow}>
+          <View style={styles.typeBadge}>
+            <Text style={styles.typeText}>{kos.type}</Text>
+          </View>
+          <Pressable
+            style={styles.favoriteButton}
+            onPress={(e) => {
+              e.stopPropagation();
+              onToggleFavorite(kos.id);
+            }}
+          >
+            <Ionicons
+              name={kos.isFavorite ? 'heart' : 'heart-outline'}
+              size={22}
+              color={kos.isFavorite ? '#ff4757' : '#2f3542'}
+            />
+          </Pressable>
         </View>
-        <Pressable
-          style={styles.favoriteButton}
-          onPress={(e) => {
-            e.stopPropagation();
-            onToggleFavorite(kos.id);
-          }}
-        >
-          <Ionicons
-            name={kos.isFavorite ? 'heart' : 'heart-outline'}
-            size={24}
-            color={kos.isFavorite ? '#ff4757' : '#ffffff'}
-          />
-        </Pressable>
       </View>
 
       <View style={styles.infoContainer}>
         <View style={styles.titleRow}>
           <Text style={styles.title} numberOfLines={1}>{kos.title}</Text>
-          <View style={styles.facilitiesIcons}>
-            {kos.facilities.includes('WiFi') && <Ionicons name="wifi" size={16} color="#747d8c" style={styles.iconSpaced} />}
-            {kos.facilities.includes('AC') && <Ionicons name="snow" size={16} color="#747d8c" style={styles.iconSpaced} />}
-            {kos.facilities.includes('Kamar mandi dalam') && <Ionicons name="water" size={16} color="#747d8c" />}
-          </View>
         </View>
         
         <View style={styles.locationRow}>
-          <Ionicons name="location-outline" size={16} color="#747d8c" />
+          <Ionicons name="location" size={16} color="#747d8c" />
           <Text style={styles.locationText} numberOfLines={1}>{kos.location}</Text>
         </View>
 
-        <View style={styles.priceRow}>
-          <Text style={styles.price}>{kos.price}</Text>
-          <Text style={styles.duration}>/ bulan</Text>
+        <View style={styles.divider} />
+
+        <View style={styles.footerRow}>
+          <View style={styles.priceContainer}>
+            <Text style={styles.price}>{kos.price}</Text>
+            <Text style={styles.duration}>/bln</Text>
+          </View>
+
+          <View style={styles.facilitiesIcons}>
+            {kos.facilities.includes('WiFi') && <View style={styles.iconBadge}><Ionicons name="wifi" size={14} color="#1e90ff" /></View>}
+            {kos.facilities.includes('AC') && <View style={styles.iconBadge}><Ionicons name="snow" size={14} color="#1e90ff" /></View>}
+            {kos.facilities.includes('Kamar mandi dalam') && <View style={styles.iconBadge}><Ionicons name="water" size={14} color="#1e90ff" /></View>}
+          </View>
         </View>
       </View>
     </Pressable>
@@ -74,18 +83,20 @@ export default function KosCard({ kos, onToggleFavorite }: KosCardProps) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#ffffff',
-    borderRadius: 16,
+    borderRadius: 24,
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowColor: '#1e90ff',
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
+    shadowRadius: 16,
+    elevation: 6,
     overflow: 'hidden',
-    marginHorizontal: 2,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.8)',
   },
   imageContainer: {
-    height: 180,
+    height: 190,
     width: '100%',
     position: 'relative',
   },
@@ -93,75 +104,101 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  typeBadge: {
+  topBadgesRow: {
     position: 'absolute',
-    top: 15,
-    left: 15,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
+    top: 16,
+    left: 16,
+    right: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  typeBadge: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
   typeText: {
-    color: '#ffffff',
+    color: '#2f3542',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '800',
   },
   favoriteButton: {
-    position: 'absolute',
-    top: 15,
-    right: 15,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 20,
-    padding: 8,
+    padding: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
   infoContainer: {
-    padding: 16,
+    padding: 18,
   },
   titleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   title: {
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 20,
+    fontWeight: '800',
     color: '#2f3542',
     flex: 1,
-    marginRight: 10,
-  },
-  facilitiesIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconSpaced: {
-    marginRight: 6,
   },
   locationRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   locationText: {
     fontSize: 14,
     color: '#747d8c',
-    marginLeft: 4,
+    marginLeft: 6,
     flex: 1,
+    fontWeight: '500',
   },
-  priceRow: {
+  divider: {
+    height: 1,
+    backgroundColor: '#f1f2f6',
+    marginBottom: 16,
+  },
+  footerRow: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
   },
   price: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '800',
     color: '#1e90ff',
   },
   duration: {
     fontSize: 14,
     color: '#747d8c',
-    marginBottom: 2,
     marginLeft: 4,
+    fontWeight: '600',
+  },
+  facilitiesIcons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  iconBadge: {
+    width: 32,
+    height: 32,
+    backgroundColor: '#f1f6f9',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
