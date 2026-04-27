@@ -1,14 +1,19 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, SafeAreaView, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import KosCard from '../../components/KosCard';
-import { mockKosList } from '../../constants/mockData';
 import { useFavorites } from '../../hooks/useFavorites';
+import { useKostData } from '../../hooks/useKostData';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function FavoritesScreen() {
   const { toggleFavorite, isFavorite, favorites } = useFavorites();
+  const { kostList } = useKostData();
+  const { logout } = useAuth();
+  const router = useRouter();
 
-  const favoriteKos = mockKosList.filter(kos => favorites.includes(kos.id));
+  const favoriteKos = kostList.filter(kos => favorites.includes(kos.id));
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -47,7 +52,7 @@ export default function FavoritesScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f1f6f9',
+    backgroundColor: '#F4F9FF',
   },
   container: {
     flex: 1,
@@ -60,12 +65,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '800',
-    color: '#2f3542',
+    color: '#1A1D23',
     marginBottom: 4,
+    letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#747d8c',
+    fontSize: 15,
+    color: '#8A95A5',
+    fontWeight: '500',
   },
   listContainer: {
     paddingBottom: 24,
@@ -79,12 +86,12 @@ const styles = StyleSheet.create({
   emptyIconContainer: {
     width: 120,
     height: 120,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#E8F4FD',
     borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 24,
-    shadowColor: '#1e90ff',
+    shadowColor: '#007AFF',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.1,
     shadowRadius: 16,
@@ -92,13 +99,13 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: 22,
-    fontWeight: '700',
-    color: '#2f3542',
+    fontWeight: '800',
+    color: '#1A1D23',
     marginBottom: 12,
   },
   emptyText: {
-    fontSize: 16,
-    color: '#747d8c',
+    fontSize: 15,
+    color: '#8A95A5',
     textAlign: 'center',
     lineHeight: 24,
   },

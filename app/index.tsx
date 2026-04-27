@@ -1,196 +1,183 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Pressable, SafeAreaView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable, Dimensions, StatusBar } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 
-const { width } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 export default function OnboardingScreen() {
   const router = useRouter();
 
+  const handleStart = () => {
+    // Navigate strictly to login page
+    router.replace('/login');
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        {/* Logo/Brand */}
-        <View style={styles.header}>
-          <View style={styles.logoContainer}>
-            <Ionicons name="home" size={32} color="#1e90ff" />
-          </View>
-          <Text style={styles.brandName}>SmartKost</Text>
-        </View>
-
-        {/* Illustration Placeholder - We'll use a clean icon combination since we might not have custom illustration assets */}
-        <View style={styles.illustrationContainer}>
-          <View style={styles.circleBig}>
-            <Ionicons name="map" size={80} color="#1e90ff" />
-            <View style={styles.pinBadge}>
-              <Ionicons name="location" size={24} color="#ff4757" />
-            </View>
-          </View>
-        </View>
-
-        {/* Text Details */}
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>Temukan Kost Idamanmu</Text>
-          <Text style={styles.titleHL}>dengan Cepat & Mudah</Text>
-          <Text style={styles.subtitle}>
-            Cari, bandingkan, dan temukan kost yang paling sesuai dengan kebutuhanmu, semua dalam satu aplikasi.
-          </Text>
-        </View>
-
-        {/* Buttons */}
-        <View style={styles.buttonContainer}>
-          <Pressable 
-            style={styles.primaryButton}
-            onPress={() => router.replace('/(tabs)')}
-          >
-            <Text style={styles.primaryButtonText}>Cari Kost Sekarang</Text>
-            <Ionicons name="arrow-forward" size={20} color="#ffffff" style={styles.buttonIcon} />
-          </Pressable>
-
-          <Pressable 
-            style={styles.secondaryButton}
-            onPress={() => router.replace('/(tabs)')}
-          >
-            <Text style={styles.secondaryButtonText}>Lihat Rekomendasi</Text>
-          </Pressable>
-        </View>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      
+      {/* Large modern house image at sunset */}
+      <View style={styles.imageContainer}>
+        <Image 
+          source={{ uri: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=1200' }} 
+          style={styles.image}
+          resizeMode="cover"
+        />
+        {/* Soft overlay gradient equivalent (using views) */}
+        <View style={styles.gradientOverlayTop} />
+        <View style={styles.gradientOverlayBottom} />
       </View>
-    </SafeAreaView>
+
+      {/* Glassmorphic content area */}
+      <View style={styles.contentContainer}>
+        <View style={styles.logoBadge}>
+          <Text style={styles.logoLogo}>🏠</Text>
+        </View>
+        <Text style={styles.brandName}>SmartKost</Text>
+        <Text style={styles.subtitle}>Intelligent Assistant for Hassle-Free Search</Text>
+        
+        <Text style={styles.tagline}>
+          Cari kost jadi mudah, cepat, dan sesuai kebutuhanmu.
+        </Text>
+
+        <View style={styles.paginationContainer}>
+          <View style={[styles.dot, styles.dotActive]} />
+          <View style={styles.dot} />
+          <View style={styles.dot} />
+        </View>
+
+        <Pressable 
+          style={({ pressed }) => [
+            styles.button,
+            pressed && styles.buttonPressed
+          ]} 
+          onPress={handleStart}
+        >
+          <Text style={styles.buttonText}>Mulai Sekarang</Text>
+        </Pressable>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f1f6f9', // Soft blue/white background
+    backgroundColor: '#F4F9FF',
   },
-  content: {
-    flex: 1,
-    padding: 24,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 40,
-    gap: 12,
-  },
-  logoContainer: {
-    width: 48,
-    height: 48,
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#1e90ff',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  brandName: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#2f3542',
-    letterSpacing: -0.5,
-  },
-  illustrationContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  circleBig: {
-    width: width * 0.6,
-    height: width * 0.6,
-    backgroundColor: '#e6f2ff',
-    borderRadius: width * 0.3,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-    shadowColor: '#1e90ff',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.1,
-    shadowRadius: 20,
-    elevation: 5,
-  },
-  pinBadge: {
+  imageContainer: {
+    width: width,
+    height: height * 0.65,
     position: 'absolute',
-    top: 30,
-    right: 20,
-    backgroundColor: '#ffffff',
-    padding: 8,
-    borderRadius: 20,
-    shadowColor: '#ff4757',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
+    top: 0,
   },
-  textContainer: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#2f3542',
-    textAlign: 'center',
-  },
-  titleHL: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#1e90ff',
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#747d8c',
-    textAlign: 'center',
-    lineHeight: 24,
-    paddingHorizontal: 20,
-  },
-  buttonContainer: {
+  image: {
     width: '100%',
-    gap: 16,
+    height: '100%',
+  },
+  gradientOverlayTop: {
+    position: 'absolute',
+    top: 0,
+    width: '100%',
+    height: 150,
+    backgroundColor: 'rgba(0,0,0,0.2)',
+  },
+  gradientOverlayBottom: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: 300,
+    backgroundColor: 'rgba(244, 249, 255, 0.95)', // Fades into the safe area
+  },
+  contentContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingHorizontal: 32,
+    paddingTop: 32,
+    paddingBottom: 48,
+    shadowColor: '#007AFF',
+    shadowOffset: { width: 0, height: -10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 30,
+    elevation: 20,
+    alignItems: 'center',
+  },
+  logoBadge: {
+    width: 64,
+    height: 64,
+    backgroundColor: '#E8F4FD',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 20,
   },
-  primaryButton: {
+  logoLogo: {
+    fontSize: 32,
+  },
+  brandName: {
+    fontSize: 34,
+    fontWeight: '800',
+    color: '#1A1D23',
+    letterSpacing: -0.5,
+    marginBottom: 6,
+  },
+  subtitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#007AFF',
+    textAlign: 'center',
+    marginBottom: 24,
+    letterSpacing: 0.2,
+  },
+  tagline: {
+    fontSize: 16,
+    color: '#8A95A5',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 24,
+    fontWeight: '500',
+  },
+  paginationContainer: {
     flexDirection: 'row',
-    backgroundColor: '#1e90ff',
-    width: '100%',
-    paddingVertical: 18,
-    borderRadius: 20,
-    justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#1e90ff',
+    justifyContent: 'center',
+    marginBottom: 36,
+    gap: 8,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(0,122,255,0.2)',
+  },
+  dotActive: {
+    width: 24,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#007AFF',
+  },
+  button: {
+    width: '100%',
+    backgroundColor: '#007AFF',
+    paddingVertical: 18,
+    borderRadius: 24,
+    alignItems: 'center',
+    shadowColor: '#007AFF',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 16,
     elevation: 8,
   },
-  primaryButtonText: {
+  buttonPressed: {
+    transform: [{ scale: 0.98 }],
+    opacity: 0.9,
+  },
+  buttonText: {
     color: '#ffffff',
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  buttonIcon: {
-    marginLeft: 8,
-  },
-  secondaryButton: {
-    width: '100%',
-    paddingVertical: 18,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: '#dfe4ea',
-  },
-  secondaryButtonText: {
-    color: '#747d8c',
     fontSize: 18,
     fontWeight: '700',
   },

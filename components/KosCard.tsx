@@ -12,6 +12,11 @@ export type KosType = {
   imageUrl: string;
   facilities: string[];
   isFavorite?: boolean;
+  latitude?: number;
+  longitude?: number;
+  totalRooms?: number;
+  availableRooms?: number;
+  description?: string;
 };
 
 interface KosCardProps {
@@ -45,7 +50,7 @@ export default function KosCard({ kos, onToggleFavorite }: KosCardProps) {
             <Ionicons
               name={kos.isFavorite ? 'heart' : 'heart-outline'}
               size={22}
-              color={kos.isFavorite ? '#ff4757' : '#2f3542'}
+              color={kos.isFavorite ? '#ff4757' : '#2A2D34'}
             />
           </Pressable>
         </View>
@@ -70,9 +75,9 @@ export default function KosCard({ kos, onToggleFavorite }: KosCardProps) {
           </View>
 
           <View style={styles.facilitiesIcons}>
-            {kos.facilities.includes('WiFi') && <View style={styles.iconBadge}><Ionicons name="wifi" size={14} color="#1e90ff" /></View>}
-            {kos.facilities.includes('AC') && <View style={styles.iconBadge}><Ionicons name="snow" size={14} color="#1e90ff" /></View>}
-            {kos.facilities.includes('Kamar mandi dalam') && <View style={styles.iconBadge}><Ionicons name="water" size={14} color="#1e90ff" /></View>}
+            {kos.facilities.includes('WiFi') && <View style={styles.iconBadge}><Ionicons name="wifi" size={14} color="#007AFF" /></View>}
+            {kos.facilities.includes('AC') && <View style={styles.iconBadge}><Ionicons name="snow" size={14} color="#007AFF" /></View>}
+            {kos.facilities.includes('Kamar mandi dalam') && <View style={styles.iconBadge}><Ionicons name="water" size={14} color="#007AFF" /></View>}
           </View>
         </View>
       </View>
@@ -84,19 +89,19 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#ffffff',
     borderRadius: 24,
-    marginBottom: 20,
-    shadowColor: '#1e90ff',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 16,
+    marginBottom: 24,
+    shadowColor: '#007AFF',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.05,
+    shadowRadius: 24,
     elevation: 6,
     overflow: 'hidden',
     marginHorizontal: 4,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.8)',
+    borderColor: 'rgba(0,122,255,0.05)',
   },
   imageContainer: {
-    height: 190,
+    height: 220,
     width: '100%',
     position: 'relative',
   },
@@ -114,52 +119,54 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   typeBadge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderRadius: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
   },
   typeText: {
-    color: '#2f3542',
+    color: '#1A1D23',
     fontSize: 12,
     fontWeight: '800',
+    letterSpacing: 0.5,
   },
   favoriteButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 20,
     padding: 10,
-    shadowColor: '#000',
+    shadowColor: '#007AFF',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
+    shadowRadius: 12,
   },
   infoContainer: {
-    padding: 18,
+    padding: 20,
   },
   titleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   title: {
-    fontSize: 20,
+    fontSize: 19,
     fontWeight: '800',
-    color: '#2f3542',
+    color: '#1A1D23',
     flex: 1,
+    letterSpacing: -0.3,
   },
   locationRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   locationText: {
     fontSize: 14,
-    color: '#747d8c',
+    color: '#8A95A5',
     marginLeft: 6,
     flex: 1,
     fontWeight: '500',
@@ -181,11 +188,11 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#1e90ff',
+    color: '#007AFF',
   },
   duration: {
     fontSize: 14,
-    color: '#747d8c',
+    color: '#8A95A5',
     marginLeft: 4,
     fontWeight: '600',
   },
@@ -196,8 +203,8 @@ const styles = StyleSheet.create({
   iconBadge: {
     width: 32,
     height: 32,
-    backgroundColor: '#f1f6f9',
-    borderRadius: 12,
+    backgroundColor: '#E8F4FD',
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },

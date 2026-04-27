@@ -3,6 +3,8 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import { FavoritesProvider } from '../hooks/useFavorites';
+import { AuthProvider } from '../hooks/useAuth';
+import { KostDataProvider } from '../hooks/useKostData';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
@@ -14,16 +16,21 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <FavoritesProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="kos/[id]" options={{ headerShown: false, presentation: 'card' }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </FavoritesProvider>
+    <AuthProvider>
+      <KostDataProvider>
+        <FavoritesProvider>
+          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <Stack>
+              <Stack.Screen name="index" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+              <Stack.Screen name="kos/[id]" options={{ headerShown: false, presentation: 'card' }} />
+              <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+            </Stack>
+            <StatusBar style="auto" />
+          </ThemeProvider>
+        </FavoritesProvider>
+      </KostDataProvider>
+    </AuthProvider>
   );
 }

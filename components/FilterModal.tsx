@@ -20,31 +20,27 @@ const TYPES_LIST = ['Putra', 'Putri', 'Campur'];
 const PRICE_OPTIONS = [500000, 1000000, 1500000, 2000000, 3000000, 5000000];
 
 export default function FilterModal({ visible, onClose, onApply, initialFilters }: FilterModalProps) {
-  const [facilities, setFacilities] = useState<string[]>(initialFilters.facilities);
-  const [type, setType] = useState<string | null>(initialFilters.type);
-  const [maxPrice, setMaxPrice] = useState<number>(initialFilters.maxPrice);
+  const facilities = initialFilters.facilities;
+  const type = initialFilters.type;
+  const maxPrice = initialFilters.maxPrice;
 
   const toggleFacility = (facility: string) => {
-    if (facilities.includes(facility)) {
-      setFacilities(facilities.filter(f => f !== facility));
-    } else {
-      setFacilities([...facilities, facility]);
-    }
+    const newFacilities = facilities.includes(facility)
+      ? facilities.filter(f => f !== facility)
+      : [...facilities, facility];
+    onApply({ facilities: newFacilities, type, maxPrice });
   };
 
-  const handleApply = () => {
-    onApply({
-      facilities,
-      type,
-      maxPrice
-    });
-    onClose();
+  const handleType = (newType: string | null) => {
+    onApply({ facilities, type: newType, maxPrice });
+  };
+
+  const handlePrice = (newPrice: number) => {
+    onApply({ facilities, type, maxPrice: newPrice });
   };
 
   const handleReset = () => {
-    setFacilities([]);
-    setType(null);
-    setMaxPrice(5000000);
+    onApply({ facilities: [], type: null, maxPrice: 5000000 });
   };
 
   const formatPrice = (price: number) => {
@@ -63,7 +59,7 @@ export default function FilterModal({ visible, onClose, onApply, initialFilters 
           <View style={styles.header}>
             <Text style={styles.headerTitle}>Filter Pencarian</Text>
             <Pressable onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="close" size={24} color="#2f3542" />
+              <Ionicons name="close" size={24} color="#2A2D34" />
             </Pressable>
           </View>
 
@@ -76,7 +72,7 @@ export default function FilterModal({ visible, onClose, onApply, initialFilters 
                   <Pressable
                     key={t}
                     style={[styles.chip, type === t && styles.chipActive]}
-                    onPress={() => setType(type === t ? null : t)}
+                    onPress={() => handleType(type === t ? null : t)}
                   >
                     <Text style={[styles.chipText, type === t && styles.chipTextActive]}>{t}</Text>
                   </Pressable>
@@ -92,7 +88,7 @@ export default function FilterModal({ visible, onClose, onApply, initialFilters 
                   <Pressable
                     key={price}
                     style={[styles.chip, maxPrice === price && styles.chipActive]}
-                    onPress={() => setMaxPrice(price)}
+                    onPress={() => handlePrice(price)}
                   >
                     <Text style={[styles.chipText, maxPrice === price && styles.chipTextActive]}>
                       {price >= 5000000 ? '> Rp 3 Jt' : `< ${formatPrice(price)}`}
@@ -123,10 +119,10 @@ export default function FilterModal({ visible, onClose, onApply, initialFilters 
 
           <View style={styles.footer}>
             <Pressable style={styles.resetButton} onPress={handleReset}>
-              <Text style={styles.resetButtonText}>Reset</Text>
+              <Text style={styles.resetButtonText}>Reset Semua</Text>
             </Pressable>
-            <Pressable style={styles.applyButton} onPress={handleApply}>
-              <Text style={styles.applyButtonText}>Terapkan Filter</Text>
+            <Pressable style={styles.applyButton} onPress={onClose}>
+              <Text style={styles.applyButtonText}>Tutup Filter</Text>
             </Pressable>
           </View>
         </View>
@@ -143,10 +139,15 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#ffffff',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: 36,
+    borderTopRightRadius: 36,
     height: '80%',
-    padding: 20,
+    padding: 24,
+    shadowColor: '#007AFF',
+    shadowOffset: { width: 0, height: -10 },
+    shadowOpacity: 0.08,
+    shadowRadius: 20,
+    elevation: 24,
   },
   header: {
     flexDirection: 'row',
@@ -155,9 +156,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#2f3542',
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#1A1D23',
+    letterSpacing: -0.5,
   },
   closeButton: {
     padding: 4,
@@ -170,9 +172,10 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#2f3542',
-    marginBottom: 12,
+    fontWeight: '800',
+    color: '#1A1D23',
+    marginBottom: 14,
+    letterSpacing: 0.5,
   },
   optionsRow: {
     flexDirection: 'row',
@@ -184,17 +187,17 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#dfe4ea',
-    backgroundColor: '#ffffff',
+    borderColor: 'rgba(0,122,255,0.08)',
+    backgroundColor: '#F4F9FF',
   },
   chipActive: {
-    backgroundColor: '#1e90ff',
-    borderColor: '#1e90ff',
+    backgroundColor: '#007AFF',
+    borderColor: '#007AFF',
   },
   chipText: {
-    color: '#747d8c',
+    color: '#8A95A5',
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   chipTextActive: {
     color: '#ffffff',
@@ -215,20 +218,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   resetButtonText: {
-    color: '#2f3542',
+    color: '#1A1D23',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   applyButton: {
     flex: 2,
-    backgroundColor: '#1e90ff',
+    backgroundColor: '#007AFF',
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
+    shadowColor: '#007AFF',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 4,
   },
   applyButtonText: {
     color: '#ffffff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });
