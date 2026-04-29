@@ -15,11 +15,11 @@ export default function OnboardingScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
-      
+
       {/* Large modern house image at sunset */}
       <View style={styles.imageContainer}>
-        <Image 
-          source={{ uri: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=1200' }} 
+        <Image
+          source={{ uri: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=1200' }}
           style={styles.image}
           resizeMode="cover"
         />
@@ -34,8 +34,8 @@ export default function OnboardingScreen() {
           <Text style={styles.logoLogo}>🏠</Text>
         </View>
         <Text style={styles.brandName}>SmartKost</Text>
-        <Text style={styles.subtitle}>Intelligent Assistant for Hassle-Free Search</Text>
-        
+        <Text style={styles.subtitle}></Text>
+
         <Text style={styles.tagline}>
           Cari kost jadi mudah, cepat, dan sesuai kebutuhanmu.
         </Text>
@@ -46,11 +46,11 @@ export default function OnboardingScreen() {
           <View style={styles.dot} />
         </View>
 
-        <Pressable 
+        <Pressable
           style={({ pressed }) => [
             styles.button,
             pressed && styles.buttonPressed
-          ]} 
+          ]}
           onPress={handleStart}
         >
           <Text style={styles.buttonText}>Mulai Sekarang</Text>

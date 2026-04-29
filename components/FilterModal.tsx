@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Modal, Pressable, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -20,31 +20,35 @@ const TYPES_LIST = ['Putra', 'Putri', 'Campur'];
 const PRICE_OPTIONS = [500000, 1000000, 1500000, 2000000, 3000000, 5000000];
 
 export default function FilterModal({ visible, onClose, onApply, initialFilters }: FilterModalProps) {
-  const facilities = initialFilters.facilities;
-  const type = initialFilters.type;
-  const maxPrice = initialFilters.maxPrice;
+  // Use destructuring to access initialFilters values
+  const { facilities, type, maxPrice } = initialFilters;
 
   const toggleFacility = (facility: string) => {
     const newFacilities = facilities.includes(facility)
       ? facilities.filter(f => f !== facility)
       : [...facilities, facility];
-    onApply({ facilities: newFacilities, type, maxPrice });
+    onApply({ ...initialFilters, facilities: newFacilities });
   };
 
   const handleType = (newType: string | null) => {
-    onApply({ facilities, type: newType, maxPrice });
+    onApply({ ...initialFilters, type: newType });
   };
 
   const handlePrice = (newPrice: number) => {
-    onApply({ facilities, type, maxPrice: newPrice });
+    onApply({ ...initialFilters, maxPrice: newPrice });
   };
 
   const handleReset = () => {
-    onApply({ facilities: [], type: null, maxPrice: 5000000 });
+    onApply({
+      facilities: [],
+      type: null,
+      maxPrice: 5000000,
+    });
   };
 
-  const formatPrice = (price: number) => {
-    return 'Rp ' + price.toLocaleString('id-ID');
+  const formatPrice = (price: number): string => {
+    // Basic formatting without toLocaleString which can sometimes be unstable in RN without Intl polyfill
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
 
   return (
@@ -59,12 +63,12 @@ export default function FilterModal({ visible, onClose, onApply, initialFilters 
           <View style={styles.header}>
             <Text style={styles.headerTitle}>Filter Pencarian</Text>
             <Pressable onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="close" size={24} color="#2A2D34" />
+              <Ionicons name="close" size={24} color="#1A1D23" />
             </Pressable>
           </View>
 
           <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-            {/* Tipe Kos */}
+            {/* Tipe Kost */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Tipe Kost</Text>
               <View style={styles.optionsRow}>
@@ -91,7 +95,7 @@ export default function FilterModal({ visible, onClose, onApply, initialFilters 
                     onPress={() => handlePrice(price)}
                   >
                     <Text style={[styles.chipText, maxPrice === price && styles.chipTextActive]}>
-                      {price >= 5000000 ? '> Rp 3 Jt' : `< ${formatPrice(price)}`}
+                      {price >= 5000000 ? 'Semua Harga' : `< Rp ${formatPrice(price)}`}
                     </Text>
                   </Pressable>
                 ))}
@@ -102,19 +106,22 @@ export default function FilterModal({ visible, onClose, onApply, initialFilters 
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Fasilitas</Text>
               <View style={styles.optionsRow}>
-                {FACILITIES_LIST.map((f) => (
-                  <Pressable
-                    key={f}
-                    style={[styles.chip, facilities.includes(f) && styles.chipActive]}
-                    onPress={() => toggleFacility(f)}
-                  >
-                    <Text style={[styles.chipText, facilities.includes(f) && styles.chipTextActive]}>{f}</Text>
-                  </Pressable>
-                ))}
+                {FACILITIES_LIST.map((f) => {
+                  const isActive = facilities.includes(f);
+                  return (
+                    <Pressable
+                      key={f}
+                      style={[styles.chip, isActive && styles.chipActive]}
+                      onPress={() => toggleFacility(f)}
+                    >
+                      <Text style={[styles.chipText, isActive && styles.chipTextActive]}>{f}</Text>
+                    </Pressable>
+                  );
+                })}
               </View>
             </View>
             
-            <View style={{height: 40}} />
+            <View style={{ height: 40 }} />
           </ScrollView>
 
           <View style={styles.footer}>
@@ -145,37 +152,42 @@ const styles = StyleSheet.create({
     padding: 24,
     shadowColor: '#007AFF',
     shadowOffset: { width: 0, height: -10 },
-    shadowOpacity: 0.08,
-    shadowRadius: 20,
+    shadowOpacity: 0.1,
+    shadowRadius: 24,
     elevation: 24,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '800',
     color: '#1A1D23',
     letterSpacing: -0.5,
   },
   closeButton: {
-    padding: 4,
+    width: 40,
+    height: 40,
+    backgroundColor: '#F4F9FF',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   scrollContainer: {
     flex: 1,
   },
   section: {
-    marginBottom: 24,
+    marginBottom: 28,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '800',
     color: '#1A1D23',
-    marginBottom: 14,
-    letterSpacing: 0.5,
+    marginBottom: 16,
+    letterSpacing: 0.2,
   },
   optionsRow: {
     flexDirection: 'row',
@@ -183,8 +195,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   chip: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: 18,
+    paddingVertical: 12,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: 'rgba(0,122,255,0.08)',
@@ -208,30 +220,32 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#f1f2f6',
     gap: 12,
+    marginBottom: 8,
   },
   resetButton: {
     flex: 1,
-    paddingVertical: 14,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#dfe4ea',
+    paddingVertical: 16,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E8F4FD',
     alignItems: 'center',
+    backgroundColor: '#ffffff',
   },
   resetButtonText: {
-    color: '#1A1D23',
+    color: '#8A95A5',
     fontSize: 16,
     fontWeight: '700',
   },
   applyButton: {
     flex: 2,
     backgroundColor: '#007AFF',
-    paddingVertical: 14,
-    borderRadius: 12,
+    paddingVertical: 16,
+    borderRadius: 16,
     alignItems: 'center',
     shadowColor: '#007AFF',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
     elevation: 4,
   },
   applyButtonText: {

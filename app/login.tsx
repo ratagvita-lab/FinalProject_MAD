@@ -15,7 +15,7 @@ export default function LoginScreen() {
       Alert.alert('Gagal', 'Silakan masukkan username dan password.');
       return;
     }
-    
+
     // Check if it's admin or general user
     const role = username.toLowerCase() === 'admin' ? 'admin' : 'user';
     login(username, role);
@@ -30,7 +30,7 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.container}
       >
@@ -47,7 +47,7 @@ export default function LoginScreen() {
             <Ionicons name="person-outline" size={20} color="#a4b0be" style={styles.inputIcon} />
             <TextInput
               style={styles.input}
-              placeholder="Username (Ketik 'Amanda Putri')"
+              placeholder="Username"
               value={username}
               onChangeText={setUsername}
               placeholderTextColor="#a4b0be"
@@ -56,22 +56,36 @@ export default function LoginScreen() {
           </View>
 
           <View style={styles.inputWrapper}>
-            <Ionicons name="lock-closed-outline" size={20} color="#a4b0be" style={styles.inputIcon} />
+            <Ionicons
+              name="lock-closed-outline"
+              size={20}
+              color="#a4b0be"
+              style={styles.inputIcon}
+            />
+
             <TextInput
               style={styles.input}
-              placeholder="Password"
+              placeholder="Password (5 angka)"
               value={password}
-              onChangeText={setPassword}
+              onChangeText={(text) => {
+                // ambil hanya angka
+                const numericText = text.replace(/[^0-9]/g, '');
+
+                // batasi hanya 5 digit
+                if (numericText.length <= 5) {
+                  setPassword(numericText);
+                }
+              }}
+              keyboardType="numeric"   // hanya tampil keyboard angka
+              maxLength={5}            // maksimal 5 digit
               secureTextEntry
               placeholderTextColor="#a4b0be"
             />
           </View>
-
           <Pressable style={styles.forgotPassword}>
             <Text style={styles.forgotText}>Lupa Password?</Text>
           </Pressable>
-
-          <Pressable 
+          <Pressable
             style={({ pressed }) => [
               styles.loginButton,
               (!username || !password) && styles.loginButtonDisabled,
@@ -80,7 +94,7 @@ export default function LoginScreen() {
             onPress={handleLogin}
           >
             <Text style={styles.loginButtonText}>Masuk Ke Akun</Text>
-            <Ionicons name="arrow-forward" size={20} color="#ffffff" style={{marginLeft: 8}} />
+            <Ionicons name="arrow-forward" size={20} color="#ffffff" style={{ marginLeft: 8 }} />
           </Pressable>
         </View>
       </KeyboardAvoidingView>
